@@ -17,23 +17,32 @@ import pandas as pd
 from analysis import compute_cl, solve_alpha
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / "data" / "test.csv"
+DATA_FILE = BASE_DIR / "data" / "test1.csv"
+
+CL0 = 0.10
+LIFT_SLOPE = 0.11
 
 def main():
     """Run the Wind Tunnel Analyzer workflow."""
 
-    cl0 = 0.10
-    lift_slope = 0.11
+    cl0 = CL0
+    lift_slope = LIFT_SLOPE
 
     df = load_data(DATA_FILE)
     print_data_summary(df)
     plot_lift_curve(df)
     plot_drag_curve(df)
 
-    # TODO:
-    # Add code to compute the angle of attack required to achieve
-    # a target lift coefficient using solve_alpha(...).
-    # Print the result to the console.
+    target_cl = 0.80
+    alpha_required = solve_alpha(target_cl, cl0=cl0, lift_slope=lift_slope)
+    cl_check = compute_cl(alpha_required, cl0=cl0, lift_slope=lift_slope)
+
+    print("Angle-of-attack solver")
+    print("----------------------")
+    print(f"Target CL            : {target_cl:.3f}")
+    print(f"Required alpha       : {alpha_required:.2f} deg")
+    print(f"CL at that alpha     : {cl_check:.3f}")
+    print()
 
     plt.show()
 
